@@ -1,43 +1,48 @@
-import { ReactNode } from "react";
-import { X, Plus, Trash } from "lucide-react";
+import { ReactNode } from 'react'
+import { X, Plus, Trash } from 'lucide-react'
 
 import { SidebarButton } from './SidebarButton'
 
 type SidebarProps = {
-  children: ReactNode;
-  open: boolean;
-  onClose: () => void;
-  onClear: () => void;
-};
+  children: ReactNode
+  open: boolean
+  onClose: () => void
+  onClear: () => void
+  onNewChat: () => void
+}
 
-export function Sidebar({ open, onClose, onClear, children }: SidebarProps) {
+export function Sidebar({
+  open,
+  onClose,
+  onClear,
+  onNewChat,
+  children
+}: SidebarProps) {
   return (
     <section
       className={`fixed left-0 top-0 bottom-0 text-white 
-        ${open ? "w-screen bg-gray-600/75" : "w-0"} md:w-64 md:static`}
+        ${open ? 'w-screen bg-gray-600/75' : 'w-0'} md:w-64 md:static`}
     >
-      <div 
+      <div
         className={`transition-all duration-300 flex h-screen 
           ${open ? 'ml=0' : '-ml-96'} md:ml-0`}
-        >
+      >
         <div className="flex flex-col w-64 p-2 bg-gray-900">
-          <div className="flex items-center p-3 rounded-md text-sm cursor-pointer border border-white/20 hover:bg-gray-500/20">
-            <Plus
-              className="mr-3"
-              size={16}
-            />
-            Nova conversa
+          <div
+            onClick={onNewChat}
+            className="flex items-center p-3 rounded-md text-sm cursor-pointer border border-white/20 hover:bg-gray-500/20"
+          >
+            <Plus className="mr-3" size={16} />
+            New chat
           </div>
 
-          <nav className="flex-1 pt-2 overflow-y-auto">
-            {children}
-          </nav>
+          <nav className="flex-1 pt-2 overflow-y-auto">{children}</nav>
 
           <div className="border-t border-gray-700 pt-2">
             <SidebarButton
               icon={<Trash size={16} />}
-              label="Limpar todas as conversas"
-              onClick={onClear} 
+              label="Clear all conversations"
+              onClick={onClear}
             />
           </div>
         </div>
@@ -49,5 +54,5 @@ export function Sidebar({ open, onClose, onClear, children }: SidebarProps) {
         </div>
       </div>
     </section>
-  );
+  )
 }
