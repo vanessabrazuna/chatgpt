@@ -38,7 +38,7 @@ export function ChatMessageInput({ disabled, onSend }: ChatMessageInputProps) {
 
       <textarea
         ref={textElement}
-        className="flex-1 border-0 bg-transparent resize-none outline-none 
+        className="flex-1 border-0 text-white bg-transparent resize-none outline-none 
           h-6 max-h-48 overflow-y-auto"
         placeholder="Send a message."
         value={text}
