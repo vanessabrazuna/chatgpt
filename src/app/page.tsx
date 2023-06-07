@@ -8,6 +8,9 @@ import { Sidebar } from '@/components/Sidebar'
 import { Header } from '@/components/Header'
 import { ChatQuestions } from '@/components/ChatQuestions'
 import { Footer } from '@/components/Footer'
+import { SidebarChatButton } from '@/components/SidebarChatButton'
+
+import { openai } from '@/utils/openai'
 
 export default function Home() {
   const [sidebarOpened, setSidebarOpened] = useState(false)
@@ -21,7 +24,7 @@ export default function Home() {
   }, [chatActiveId, chatList])
 
   useEffect(() => {
-    if(AILoading) {
+    if (AILoading) {
       getAIResponse()
     }
   }, [AILoading])
@@ -32,8 +35,10 @@ export default function Home() {
   function getAIResponse() {
     setTimeout(() => {
       let chatListClone = [...chatList]
-      let chatIndex = chatListClone.findIndex(message => message.id === chatActiveId)
-      if(chatIndex > -1) {
+      let chatIndex = chatListClone.findIndex(
+        message => message.id === chatActiveId
+      )
+      if (chatIndex > -1) {
         chatListClone[chatIndex].messages.push({
           id: uuidv4(),
           author: 'ai',
@@ -49,7 +54,7 @@ export default function Home() {
     if (AILoading) return
 
     setChatActiveId('')
-    setChatLis([])
+    setChatList([])
   }
 
   function handleNewChat() {
@@ -64,7 +69,7 @@ export default function Home() {
       // Creating new chat
       let newChatId = uuidv4()
 
-      setChatLis([
+      setChatList([
         {
           id: newChatId,
           title: message,
@@ -84,10 +89,35 @@ export default function Home() {
         author: 'me',
         body: message
       })
-      setChatLis(chatListClone)
+      setChatList(chatListClone)
     }
 
     setAILoading(true)
+  }
+
+  function handleSelectChat(id: string) {
+    if (AILoading) return
+
+    let item = chatList.find(item => item.id === id)
+    if (item) setChatActiveId(item.id)
+    closeSidebar()
+  }
+
+  function handleDeleteChat(id: string) {
+    let chatListClone = [...chatList]
+    let chatIndex = chatListClone.findIndex(item => item.id === id)
+    chatListClone.splice(chatIndex, 1)
+    setChatList(chatListClone)
+    setChatActiveId('')
+  }
+
+  function handleEditChat(id: string, newTitle: string) {
+    if (newTitle) {
+      let chatListClone = [...chatList]
+      let chatIndex = chatListClone.findIndex(item => item.id === id)
+      chatListClone[chatIndex].title = newTitle
+      setChatList(chatListClone)
+    }
   }
 
   return (
@@ -98,13 +128,22 @@ export default function Home() {
         onClear={handleClearConversations}
         onNewChat={handleNewChat}
       >
-        <div className=""></div>
+        {chatList.map(item => (
+          <SidebarChatButton
+            key={item.id}
+            chatItem={item}
+            active={item.id === chatActiveId}
+            onClick={handleSelectChat}
+            onDelete={handleDeleteChat}
+            OnEdit={handleEditChat}
+          />
+        ))}
       </Sidebar>
 
-      <section className="flex flex-col w-full">
+      <section className="flex flex-col w-full text-white">
         <Header
           openSidebarClick={openSidebar}
-          title={``}
+          title={chatActive ? chatActive.title : 'Nova conversa'}
           newChatClick={handleNewChat}
         />
 

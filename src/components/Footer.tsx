@@ -1,4 +1,4 @@
-import { ChatMessageInput } from './ChatMessageinput'
+import { ChatMessageInput } from './ChatMessageInput'
 
 type FooterProps = {
   disabled: boolean
