@@ -32,22 +32,26 @@ export default function Home() {
   const openSidebar = () => setSidebarOpened(true)
   const closeSidebar = () => setSidebarOpened(false)
 
-  function getAIResponse() {
-    setTimeout(() => {
-      let chatListClone = [...chatList]
-      let chatIndex = chatListClone.findIndex(
-        message => message.id === chatActiveId
+  async function getAIResponse() {
+    let chatListClone = [...chatList]
+    let chatIndex = chatListClone.findIndex(
+      message => message.id === chatActiveId
+    )
+    if (chatIndex > -1) {
+      const response = await openai.generate(
+        openai.translateMessages(chatListClone[chatIndex].messages)
       )
-      if (chatIndex > -1) {
+
+      if(response) {
         chatListClone[chatIndex].messages.push({
           id: uuidv4(),
           author: 'ai',
-          body: 'If you have any questions or need assistance. Im ready to respond!'
+          body: response
         })
       }
-      setChatList(chatListClone)
-      setAILoading(false)
-    }, 2000)
+    }
+    setChatList(chatListClone)
+    setAILoading(false)
   }
 
   function handleClearConversations() {
